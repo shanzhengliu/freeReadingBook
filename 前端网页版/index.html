@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>webReading</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="assets/css/Navigation-with-Search.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var p = 1;
+        var searchurl = "https://wechatbookv1.herokuapp.com/search?keywords=&page=";
+        var stop = true;
+        var tsbookname = "";
+        var checkresult = "";
+        var maxnum = false;
+        const url = "https://wechatbookv1.herokuapp.com/search?keywords=";
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (result) {
+                    checkresult = result;
+                    var Json = JSON.parse(result);
+                    for (mybook in Json['item']) {
+                        var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                        var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                        var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                        var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                        var linkurl = 'item.html?keyword=' + Json['item'][mybook].link;
+                        var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                        content = content + author + bookname + description + link;
+
+                        $(".list-group").append(content);
+
+                    }
+                },
+                error: function (error) {
+                    console.log("1");
+                }
+
+
+
+        })
+
+
+        $(window).scroll(function () {
+            //当内容滚动到底部时加载新的内容 100当距离最底部100个像素时开始加载.  
+            if ($(this).scrollTop() + $(window).height() + 100 >= $(document).height() && $(this).scrollTop() > 100) {
+                if (maxnum == false) {
+                    if (stop == true) {
+                        stop = false;
+                        p = p + 1; //当前要加载的页码 
+
+                        var url = searchurl + String(p);
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            success: function (result) {
+                                    if (checkresult != result) {
+                                        var Json = JSON.parse(result);
+                                        checkresult = result;
+                                        for (mybook in Json['item']) {
+                                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                                            var linkurl = 'item.html?keyword=' + Json['item'][mybook].link;
+                                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                                            content = content + author + bookname + description + link;
+
+                                            $(".list-group").append(content);
+                                        }
+
+                                    } else {
+                                        maxnum = true;
+                                    }
+                                },
+                                error: function (error) {
+                                    console.log("1");
+                                }
+
+
+
+                        })
+                        stop = true;
+
+                    }
+                }
+            }
+        });
+
+
+
+
+        $(".action-button").click(function () {
+            num = 1;
+            maxnum = false;
+            var sbookname = $("#search-field").val();
+            tsbookname = sbookname;
+            $(".list-group").empty();
+            const url = "https://wechatbookv1.herokuapp.com/search?keywords=" + sbookname + "&page=1";
+            searchurl = "https://wechatbookv1.herokuapp.com/search?keywords=" + sbookname + "&page=";
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (result) {
+                        checkresult = result;
+
+                        var Json = JSON.parse(result);
+                        for (mybook in Json['item']) {
+                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                            var linkurl = 'item.html?keyword='+ Json['item'][mybook].link;
+                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                            content = content + author + bookname + description + link;
+
+                            $(".list-group").append(content);
+
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log("1");
+                    }
+
+
+
+            })
+
+        });
+
+
+
+        $("#xuanhuan").on('click',function() {
+            num = 1;
+            maxnum = false;
+        
+            var sbookname ="xuanhuan";
+            tsbookname = sbookname;
+            $(".list-group").empty();
+            const url = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=1";
+            searchurl = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=";
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (result) {
+                        checkresult = result;
+
+                        var Json = JSON.parse(result);
+                        for (mybook in Json['item']) {
+                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                            var linkurl = 'item.html?keyword='+ Json['item'][mybook].link;
+                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                            content = content + author + bookname + description + link;
+
+                            $(".list-group").append(content)
+
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log("1")
+                    }
+
+
+
+            })
+
+        });
+
+    $("#chuanyue").on('click',function() {
+            num = 1;
+            maxnum = false;
+           
+            var sbookname ="chuanyue";
+            tsbookname = sbookname;
+            $(".list-group").empty();
+            const url = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=1";
+            searchurl = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page="
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (result) {
+                        checkresult = result;
+
+                        var Json = JSON.parse(result);
+                        for (mybook in Json['item']) {
+                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                            var linkurl = 'item.html?keyword='+ Json['item'][mybook].link;
+                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                            content = content + author + bookname + description + link;
+
+                            $(".list-group").append(content)
+
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log("1");
+                    }
+
+
+
+            })
+
+        });
+
+    $("#xianxia").on('click',function() {
+            num = 1;
+            maxnum = false;
+            
+            var sbookname ="xianxia";
+            tsbookname = sbookname;
+            $(".list-group").empty();
+            const url = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=1";
+            searchurl = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=";
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (result) {
+                        checkresult = result;
+
+                        var Json = JSON.parse(result);
+                        for (mybook in Json['item']) {
+                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                            var linkurl = 'item.html?keyword='+ Json['item'][mybook].link;
+                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                            content = content + author + bookname + description + link;
+
+                            $(".list-group").append(content);
+
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log("1");
+                    }
+
+
+
+            })
+
+        });
+    $("#lingyi").on('click',function() {
+            num = 1;
+            maxnum = false;
+            
+            var sbookname ="lingyi";
+            tsbookname = sbookname;
+            $(".list-group").empty();
+            const url = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=1";
+            searchurl = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page="
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (result) {
+                        checkresult = result;
+
+                        var Json = JSON.parse(result);
+                        for (mybook in Json['item']) {
+                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                            var linkurl = 'item.html?keyword='+ Json['item'][mybook].link;
+                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                            content = content + author + bookname + description + link;
+
+                            $(".list-group").append(content);
+
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log("1");
+                    }
+
+
+
+            })
+
+        });
+
+    $("#yanqing").on('click',function() {
+            num = 1;
+            maxnum = false;
+            
+            var sbookname ="yanqing";
+            tsbookname = sbookname;
+            $(".list-group").empty();
+            const url = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=1";
+            searchurl = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=";
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (result) {
+                        checkresult = result;
+
+                        var Json = JSON.parse(result);
+                        for (mybook in Json['item']) {
+                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                            var linkurl = 'item.html?keyword='+ Json['item'][mybook].link;
+                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                            content = content + author + bookname + description + link;
+
+                            $(".list-group").append(content);
+
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log("1");
+                    }
+
+
+
+            })
+
+        });
+
+    $("#lishi").on('click',function() {
+            num = 1;
+            maxnum = false;
+            
+            var sbookname ="lishi";
+            tsbookname = sbookname;
+            $(".list-group").empty();
+            const url = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=1";
+            searchurl = "https://wechatbookv1.herokuapp.com/fenlei?leibie=" + sbookname + "&page=";
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (result) {
+                        checkresult = result;
+
+                        var Json = JSON.parse(result);
+                        for (mybook in Json['item']) {
+                            var content = "<li class='list-group-item'><div class='row'><div class='col-auto'><img src= " + "'" + Json['item'][mybook].imgurl + "'></div><div class='col offset-1 mx-auto'>";
+                            var author = "<div class='row'><div class='col text-left'><small>作家:" + Json['item'][mybook].author + "<br /></small></div></div><div class='row'>";
+                            var bookname = "<div class='col'><small>书名:" + Json['item'][mybook].bookname + "<br /></small></div></div><div class='row'>";
+                            var description = "<div class='col'><small>简介:" + Json['item'][mybook].description + "<br /></small></div></div>";
+                            var linkurl = 'item.html?keyword='+ Json['item'][mybook].link;
+                            var link = "<div class='row'><div class='col'><a class='text-danger' href='" + linkurl + "'>进入阅读</a></div></div></div></div></li>";
+                            content = content + author + bookname + description + link;
+
+                            $(".list-group").append(content);
+
+
+                        }
+                    },
+                    error: function (error) {
+                        console.log("1");
+                    }
+
+
+
+            })
+
+        });
+
+
+    })
+</script>
+</head>
+
+<body><h3 class="text-center text-info">正正阅读器</h3>
+    <div></div>
+    <div class="card"></div>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
+        <div class="container"><a class="navbar-brand" href="#">热门小说搜索</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="xuanhuan" href="#">玄幻</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="chuanyue" href="#">穿越</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="xianxia" href="#">仙侠</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="lingyi" href="#">灵异</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="yanqing" href="#">言情</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="lishi" href="#">历史</a></li>
+                    <li class="nav-item" role="presentation"></li>
+                </ul>
+                <form class="form-inline mr-auto" target="_self">
+                    <div class="form-group"><label for="search-field"><i class="fa fa-search"></i></label><input class="form-control search-field" type="search" id="search-field" name="search"></div>
+                </form><a class="btn btn-light action-button" role="button" href="#">开始搜索</a></div>
+        </div>
+    </nav><div class="text-left">
+    <div class="container">
+        <ul class="list-group">
+            <li class="list-group-item">
+            </li>      
+        </ul>
+    </div>
+</div>
+    <div></div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

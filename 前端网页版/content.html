@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>webReading</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="assets/css/Navigation-with-Search.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script>   
+ $(document).ready(function () {
+
+ $("#shou").on('click',function(){
+                   
+                      window.location.href= "index.html"
+})
+
+     var getpar = window.location.href;
+     var getbookname = GetQueryString("bookname")
+     var getbookpage = GetQueryString("page")
+     console.log(getbookname)
+     const url = "https://wechatbookv1.herokuapp.com/get_content?bookname="+getbookname+"&page="+getbookpage;
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (result) {
+             $("p").append(result)
+             $("#item").on('click',function(){
+                      window.location.href= "item.html?bookname="+getbookname;
+})
+               $("#qian").on('click',function(){
+                      var page = parseInt(getbookpage)
+                      var qianpage = page-1
+                      if(qianpage<1)
+                       {qianpage=1}
+                      window.location.href= "content.html?bookname="+getbookname+"&page="+qianpage;
+})
+
+    $("#hou").on('click',function(){
+                          var page = parseInt(getbookpage)
+                      var qianpage = page+1
+                      if(qianpage<1)
+                       {qianpage=1}
+                      window.location.href= "content.html?bookname="+getbookname+"&page="+qianpage;
+})
+                    
+                },
+                error: function (error) {
+                    console.log("1")
+                }
+
+
+
+        })
+
+
+
+
+
+
+ function GetQueryString(name)
+    {
+         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+         var r = window.location.search.substr(1).match(reg);
+         if(r!=null)return  unescape(r[2]); return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+})
+</script>
+</head>
+
+<body>
+    <div class="col text-center">
+        <div class="btn-group btn-group-sm" role="group" style="padding: 0px;"><button class="btn btn-primary" id="item" type="button">目录</button><button class="btn btn-primary" id="qian" type="button">上一页</button><button class="btn btn-primary" id="hou" type="button">下一页</button><button class="btn btn-primary" id="shou"
+                type="button">首页</button></div>
+    </div>
+    <p style="padding-top: 32px;"></p>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
